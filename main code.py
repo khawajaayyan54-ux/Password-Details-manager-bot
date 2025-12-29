@@ -1,4 +1,12 @@
-def load_config():
+def load_commands(filename="commands.txt"):
+    try:
+        with open(filename) as f:
+            return [line.strip().lower() for line in f if line.strip()]
+    except:
+        print("Error file doesnt found, please create file first")
+        return []
+    
+def load_config():    
     config = {}
     try:
         with open("config.text") as f:
@@ -10,75 +18,95 @@ def load_config():
         print("config.text file not found. Using empty config.")
     return config
 
+def say_hello():
+    print("hello, i am digital Ai password manager")
+
+def who_are_you():
+    print("i am digital Ai password manager")
+
+def show_user_name():
+    print(config.get("user_name", "No user name found"))
+
+def show_user_id():
+    print(config.get("user_email", "No email found"))
+
+def show_user_password():
+    print(config.get("user_password", "No password found"))
+
+def show_recent_project():
+    print("Ai making")
+
+def show_insta_id():
+    print("xyz id")
+
+command_action = {
+    "hello" : say_hello,
+"who are u" : who_are_you,
+"user name" : show_user_name,
+"user id" : show_user_id,
+"user password" : show_user_password,
+"user recent project" : show_recent_project,
+"user insta id" : show_insta_id,
+}
+
+commands = load_commands()
 config = load_config()
 
-
-def code():
-    user = input("Enter ur command:  ")
+def password():
+    password_value = 3009
     password_bypass = ["hello", "who are u"]
-
-    if user.lower() in password_bypass:
-        # bypass password
-        password = 3009
-    else:
-        try:
-            password = int(input("Enter password first: "))
-        except ValueError:
-            print("Password must be numbers only.")
-            return
-
-    if password == 3009:
-        if user.lower() == "hello":
-            print("hello, i am digital Ai password manager")
-
-        elif user.lower() == "who are u":
-            print("i am digital Ai password manager")
-
-        elif user.lower() == "user name":
-            print(config.get("user_name", "No user name found"))
-
-        elif user.lower() == "user id":
-            print(config.get("user_email", "No email found"))
-
-        elif user.lower() == "user password":
-            print(config.get("user_password", "No password found"))
-
-        elif user.lower() == "user recent project":
-            print("Ai making")
-
-        elif user.lower() == "user insta id":
-            print("xyz id")
-
-        else:
-            print("sorry code cant continue due to unexpected error")
-    else:
-        print("wrong password")
-code()
+    return password_value, password_bypass
 
 def help_menu():
+    print()
     print("these are the keys that can continue without error:") 
-    print("hello") 
-    print("user insta id") 
-    print("user recent project") 
-    print("user password") 
-    print("user id") 
-    print("user name") 
-    print("who are u") 
-    print("for exiting help menu these are the keys:") 
-    print("yes to start again") 
-    print("no to stop") 
+    for cmd in commands:
+        print(f"-{cmd}")
+    print()
+    print("for exiting help menu these are the keys:")
+    print() 
+    print("y to start again") 
+    print("n to stop") 
     print("type help if u get any error")
+    
+def code():
+    password_value, password_bypass = password()
+        
+    user = input("Enter ur command:  ").lower()
+    if user == "help":
+        help_menu()
+    else:
+        if user in commands:
+            if user.lower() in password_bypass:
+                entered_password = password_value
+                # bypass password
+            else:
+                try:
+                    entered_password = int(input("Enter password first: "))
+                except ValueError:
+                    print("Password must be numbers only.")
+                    return
+
+            if entered_password != password_value:
+                print("wrong password")
+                return
+            
+            command_action[user]()
+        else:
+            print("Please write correct command")
+code()
+
 
 
 while True:
-    a = input("u want to continue? ")
-    if a.lower() == "yes":
+    a = input(f"u want to continue? \nto continue type y\nto Exit type n \nif u facing any problem type help: " )
+    if a.lower() == "y":
         code()
 
     elif a.lower() == "help":
         help_menu()
 
-    elif a.lower() == "no":
+    elif a.lower() == "n":
         print("exiting program")
         break
 
